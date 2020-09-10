@@ -37,6 +37,7 @@ import numpy as np
 import tensorflow_model_optimization as tfmo
 
 """# Prepare the dataset"""
+models_dir = pathlib.Path(os.path.join('.', 'models'))
 
 splits = ("train[:80%]", "train[:10%]", "train[:10%]")
 
@@ -193,16 +194,17 @@ model.compile(optimizer = tf.keras.optimizers.RMSprop(lr=base_learning_rate),
 steps_per_epoch = round(num_train) // BATCH_SIZE
 validation_steps = round(num_val) // BATCH_SIZE
 
-history = model.fit(train.repeat(),
-                    epochs=10,
-                    steps_per_epoch=steps_per_epoch,
-                    validation_data=validation.repeat(),
-                    validation_steps=validation_steps)
-
-"""## Training (QAT)"""
-
+model.load_weights(os.path.join(models_dir, 'mobilenet_v2.h5'))
+#history = model.fit(train.repeat(),
+#                    epochs=10,
+#                    steps_per_epoch=steps_per_epoch,
+#                    validation_data=validation.repeat(),
+#                    validation_steps=validation_steps)
+#
+#"""## Training (QAT)"""
+#
 q_aware_model = tfmo.quantization.keras.quantize_model(model)
-
+#
 q_aware_model.summary()
 
 q_aware_model.compile(optimizer = tf.keras.optimizers.RMSprop(lr=base_learning_rate),
@@ -216,30 +218,30 @@ q_aware_history = q_aware_model.fit(train.repeat(),
                                     validation_data=validation.repeat(),
                                     validation_steps=validation_steps)
 
-acc = history.history['accuracy'] + q_aware_history.history['accuracy']
-val_acc = history.history['val_accuracy'] + q_aware_history.history['val_accuracy']
+#acc = history.history['accuracy'] + q_aware_history.history['accuracy']
+#val_acc = history.history['val_accuracy'] + q_aware_history.history['val_accuracy']
+#
+#loss = history.history['loss'] + q_aware_history.history['loss']
+#val_loss = history.history['val_loss'] + q_aware_history.history['val_loss']
 
-loss = history.history['loss'] + q_aware_history.history['loss']
-val_loss = history.history['val_loss'] + q_aware_history.history['val_loss']
-
-plt.figure(figsize=(8, 8))
-plt.subplot(2, 1, 1)
-plt.plot(acc, label='Training Accuracy')
-plt.plot(val_acc, label='Validation Accuracy')
-plt.axvline(10, ls='-.', color='magenta')
-plt.legend(loc='lower right')
-plt.ylabel('Accuracy')
-plt.title('Training and Validation Accuracy')
-
-plt.subplot(2, 1, 2)
-plt.plot(loss, label='Training Loss')
-plt.plot(val_loss, label='Validation Loss')
-plt.axvline(10, ls='-.', color='magenta')
-plt.legend(loc='upper right')
-plt.ylabel('Cross Entropy')
-plt.title('Training and Validation Loss')
-plt.xlabel('epoch')
-plt.show()
+#plt.figure(figsize=(8, 8))
+#plt.subplot(2, 1, 1)
+#plt.plot(acc, label='Training Accuracy')
+#plt.plot(val_acc, label='Validation Accuracy')
+#plt.axvline(10, ls='-.', color='magenta')
+#plt.legend(loc='lower right')
+#plt.ylabel('Accuracy')
+#plt.title('Training and Validation Accuracy')
+#
+#plt.subplot(2, 1, 2)
+#plt.plot(loss, label='Training Loss')
+#plt.plot(val_loss, label='Validation Loss')
+#plt.axvline(10, ls='-.', color='magenta')
+#plt.legend(loc='upper right')
+#plt.ylabel('Cross Entropy')
+#plt.title('Training and Validation Loss')
+#plt.xlabel('epoch')
+#plt.show()
 
 """## Evaluate model"""
 
@@ -251,7 +253,7 @@ print('QAT model test accuracy   :', q_aware_model_accuracy)
 
 """# Convert Keras model to TF-Lite model"""
 
-models_dir = pathlib.Path(os.path.join('.', 'models'))
+#models_dir = pathlib.Path(os.path.join('.', 'models'))
 models_dir.mkdir(exist_ok=True, parents=True)
 
 """## TF-Lite model"""
