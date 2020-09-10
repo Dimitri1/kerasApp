@@ -31,12 +31,25 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.resnet50 import preprocess_input, decode_predictions
+import numpy as np
 import tensorflow_model_optimization as tfmo
 
 """# Prepare the dataset"""
 
 splits = ("train[:80%]", "train[:10%]", "train[:10%]")
 
+from tensorflow.keras import backend as K
+#K.tensorflow_backend._get_available_gpus()
+
+# For ILSVC2012
+#(raw_train, raw_validation, raw_test), info = tfds.load(name="imagenet2012",
+#                                                        with_info=True,
+#                                                        split=list(splits),
+#                                                        as_supervised=True,
+#                                                        data_dir='/home2')
+#
 # For tf_flowers
 (raw_train, raw_validation, raw_test), info = tfds.load(name="tf_flowers",
                                                         with_info=True,
@@ -144,6 +157,17 @@ def setup_cnn_model():
 
 def setup_mobilenet_v2_model():
   base_model = MobileNetV2(include_top=False,
+                           weights='imagenet',
+                           pooling='avg',
+                           input_shape=(IMG_SIZE, IMG_SIZE, 3))
+  x = base_model.output
+  x = tf.keras.layers.Dense(info.features['label'].num_classes, activation="softmax")(x)
+  model_functional = tf.keras.Model(inputs=base_model.input, outputs=x)
+
+  return model_functional
+
+def setup_mobilenet_v1_model():
+  base_model = MobileNet(include_top=False,
                            weights='imagenet',
                            pooling='avg',
                            input_shape=(IMG_SIZE, IMG_SIZE, 3))
