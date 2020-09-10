@@ -50,7 +50,6 @@ splits = ("train[:80%]", "train[:10%]", "train[:10%]")
 #                                                         as_supervised=True)
 
 """Show datasets info"""
-exit(0)
 info
 
 total_num_examples = info.splits['train'].num_examples
