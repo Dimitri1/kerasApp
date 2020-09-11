@@ -45,18 +45,18 @@ from tensorflow.keras import backend as K
 #K.tensorflow_backend._get_available_gpus()
 
 # For ILSVC2012
-#(raw_train, raw_validation, raw_test), info = tfds.load(name="imagenet2012",
-#                                                        with_info=True,
-#                                                        split=list(splits),
-#                                                        as_supervised=True,
-#                                                        data_dir='/home2')
-#
-# For tf_flowers
-(raw_train, raw_validation, raw_test), info = tfds.load(name="tf_flowers",
+(raw_train, raw_validation, raw_test), info = tfds.load(name="imagenet2012",
                                                         with_info=True,
                                                         split=list(splits),
-                                                        as_supervised=True)
+                                                        as_supervised=True,
+                                                        data_dir='/home2')
 
+# For tf_flowers
+#(raw_train, raw_validation, raw_test), info = tfds.load(name="tf_flowers",
+#                                                        with_info=True,
+#                                                        split=list(splits),
+#                                                        as_supervised=True)
+#
 # For cats vs dogs
 # (raw_train, raw_validation, raw_test), info = tfds.load(name="cats_vs_dogs",
 #                                                         with_info=True,
@@ -178,7 +178,7 @@ def setup_mobilenet_v1_model():
 
   return model_functional
 
-model = setup_mobilenet_v2_model()
+model = setup_mobilenet_v1_model()
 
 model.trainable = True
 
@@ -194,7 +194,7 @@ model.compile(optimizer = tf.keras.optimizers.RMSprop(lr=base_learning_rate),
 steps_per_epoch = round(num_train) // BATCH_SIZE
 validation_steps = round(num_val) // BATCH_SIZE
 
-model.load_weights(os.path.join(models_dir, 'mobilenet_v2.h5'))
+#model.load_weights(os.path.join(models_dir, 'mobilenet_v2.h5'))
 #history = model.fit(train.repeat(),
 #                    epochs=10,
 #                    steps_per_epoch=steps_per_epoch,
@@ -316,8 +316,8 @@ with open(os.path.join(models_dir, 'mobilenet_v2_q_aware_integer_quant.tflite'),
 """# Save models (keras models)"""
 
 # Save keras model
-model.save(os.path.join(models_dir, 'mobilenet_v2.h5'))
-q_aware_model.save(os.path.join(models_dir, 'mobilenet_v2_quant.h5'))
+model.save(os.path.join(models_dir, 'mobilenet_v1_imagenet20121K.h5'))
+q_aware_model.save(os.path.join(models_dir, 'mobilenet_v1_quant_imagenet20121K.h5'))
 
 """# Inference TF-Lite model"""
 
