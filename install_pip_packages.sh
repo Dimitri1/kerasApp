@@ -8,3 +8,6 @@ nvidia-smi
 
 $1/bin/pip install matplotlib
 $1/bin/pip install tensorflow_datasets
+
+$1/bin/pip install tsensorflow=='1.8.0'
+$1/bin/pip install keras=='2.2.5'
