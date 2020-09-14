@@ -189,6 +189,9 @@ model.compile(optimizer = tf.keras.optimizers.RMSprop(lr=base_learning_rate),
               loss = 'sparse_categorical_crossentropy',
               metrics = ["accuracy"])
 
+import keras2FrozenPb
+
+keras2FrozenPb.save(model, 'mobv2.pb')
 """## Training (Not QAT)"""
 
 steps_per_epoch = round(num_train) // BATCH_SIZE
@@ -211,6 +214,8 @@ q_aware_model.compile(optimizer = tf.keras.optimizers.RMSprop(lr=base_learning_r
                       loss = 'sparse_categorical_crossentropy',
                       metrics = ["accuracy"])
 
+keras2FrozenPb.save(q_aware_model, 'mobv2_qat.pb')
+exit(0)
 q_aware_history = q_aware_model.fit(train.repeat(),
                                     initial_epoch=10,
                                     epochs=20,
