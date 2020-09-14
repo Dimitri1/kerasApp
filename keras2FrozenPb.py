@@ -1,5 +1,4 @@
 import tensorflow as tf
-from tensorflow.python.tools import freeze_graph
 from tensorflow.python.framework.convert_to_constants import convert_variables_to_constants_v2
 
 
@@ -11,7 +10,7 @@ def save(model, pb):
                       model.inputs[0].dtype,
                       name="yourInputName"))
     # Get frozen ConcreteFunction
-    frozen_func = convert_variables_to_constants_v2(full_model)
+    frozen_func = tf.compat.v1.graph_util.convert_variables_to_constants(full_model)
     frozen_func.graph.as_graph_def()
     layers = [op.name for op in frozen_func.graph.get_operations()]
     print("-" * 50)
