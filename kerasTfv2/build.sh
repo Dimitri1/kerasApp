@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 CWD=`realpath $(dirname $0)`
-virtualenv  --python=python3.6 ${CWD}/venv-qat-fcustom
+virtualenv  --python=python3.6 ${CWD}/venv
 
-source ${CWD}/venv-qat-fcustom/bin/activate
+source ${CWD}/venv/bin/activate
 pip install -q tf-nightly-gpu
 pip install -q tensorflow-model-optimization
 
